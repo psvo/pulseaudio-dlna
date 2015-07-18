@@ -37,6 +37,7 @@ class BaseUpnpMediaRendererDiscover(object):
     def search(self, ttl=10, timeout=2, times=7):
         s.setdefaulttimeout(timeout)
         sock = s.socket(s.AF_INET, s.SOCK_DGRAM, s.IPPROTO_UDP)
+        sock.bind(('', self.SSDP_PORT))
         sock.setsockopt(s.IPPROTO_IP, s.IP_MULTICAST_TTL, ttl)
         buffer_size = 1024
 
