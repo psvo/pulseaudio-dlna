@@ -38,18 +38,24 @@ class BaseUpnpMediaRendererDiscover(object):
         s.setdefaulttimeout(timeout)
         sock = s.socket(s.AF_INET, s.SOCK_DGRAM, s.IPPROTO_UDP)
         sock.setsockopt(s.IPPROTO_IP, s.IP_MULTICAST_TTL, ttl)
+        buffer_size = 1024
 
         for i in range(0, times):
+            logging.info('Searching for renderers, try #{i}'.format(
+                i=i))
             sock.sendto(self.MSEARCH, (self.SSDP_ADDRESS, self.SSDP_PORT))
-            time.sleep(0.1)
-
-        buffer_size = 1024
-        while True:
             try:
-                header, address = sock.recvfrom(buffer_size)
-                self._header_received(header, address)
+                end_time = time.time() + timeout + 0.1
+                while True:
+                    _timeout = end_time - time.time()
+                    if _timeout <= 0:
+                        break
+                    sock.settimeout(_timeout)
+                    header, address = sock.recvfrom(buffer_size)
+                    self._header_received(header, address)
             except s.timeout:
-                break
+                continue
+
         sock.close()
 
     def _header_received(self, header, address):
