@@ -147,6 +147,7 @@ class PulseAudioDLNA(object):
         setproctitle.setproctitle('pulseaudio-dlna')
         signal.signal(signal.SIGINT, self.shutdown)
         signal.signal(signal.SIGTERM, self.shutdown)
+        signal.signal(signal.SIGHUP, self.shutdown)
         try:
             mainloop = gobject.MainLoop()
             mainloop.run()
