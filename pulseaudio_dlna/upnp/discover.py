@@ -34,7 +34,7 @@ class BaseUpnpMediaRendererDiscover(object):
               'MX: 2\r\n' + \
               'ST: urn:schemas-upnp-org:device:MediaRenderer:1\r\n\r\n'
 
-    def search(self, ttl=10, timeout=5, times=2):
+    def search(self, ttl=10, timeout=2, times=7):
         s.setdefaulttimeout(timeout)
         sock = s.socket(s.AF_INET, s.SOCK_DGRAM, s.IPPROTO_UDP)
         sock.setsockopt(s.IPPROTO_IP, s.IP_MULTICAST_TTL, ttl)
@@ -68,7 +68,7 @@ class UpnpMediaRendererDiscover(BaseUpnpMediaRendererDiscover):
         self.renderers = None
         self.device_filter = device_filter
 
-    def search(self, ttl=10, timeout=5, times=2):
+    def search(self, ttl=10, timeout=2, times=7):
         self.renderers = []
         BaseUpnpMediaRendererDiscover.search(self, ttl, timeout, times)
 
