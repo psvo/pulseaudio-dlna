@@ -39,3 +39,9 @@ class DLNAPlugin(pulseaudio_dlna.plugins.BasePlugin):
         return pulseaudio_dlna.plugins.upnp.renderer.UpnpMediaRendererFactory.from_header(
             header,
             pulseaudio_dlna.plugins.upnp.renderer.CoinedUpnpMediaRenderer)
+
+
+class DLNAPluginAlias(DLNAPlugin):
+    def __init__(self, *args):
+        super(DLNAPluginAlias, self).__init__(*args)
+        self.st_header = 'urn:schemas-upnp-org:service:ConnectionManager:1'

@@ -74,6 +74,7 @@ class Application(object):
 
         plugins = [
             pulseaudio_dlna.plugins.upnp.DLNAPlugin(),
+            pulseaudio_dlna.plugins.upnp.DLNAPluginAlias(),
             pulseaudio_dlna.plugins.chromecast.ChromecastPlugin(),
         ]
 
