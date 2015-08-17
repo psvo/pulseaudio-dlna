@@ -20,8 +20,24 @@ from __future__ import unicode_literals
 import socket as s
 import logging
 import time
+import threading
 
 logger = logging.getLogger('pulseaudio_dlna.discover')
+
+
+class DiscoveryTimer:
+    def __init__(self, timeout):
+        self.fired = False
+        self.timer = threading.Timer(timeout, self.callback)
+
+    def callback(self):
+        self.fired = True
+
+    def start(self):
+        self.timer.start()
+
+    def cancel(self):
+        self.timer.cancel()
 
 
 class BaseUpnpMediaRendererDiscover(object):
@@ -36,6 +52,9 @@ class BaseUpnpMediaRendererDiscover(object):
               'ST: ssdp:all\r\n\r\n'
 
     def search(self, ttl=10, timeout=5, times=4):
+        timer = DiscoveryTimer(timeout)
+        timer.start()
+
         s.setdefaulttimeout(timeout)
         sock = s.socket(s.AF_INET, s.SOCK_DGRAM, s.IPPROTO_UDP)
         sock.setsockopt(s.IPPROTO_IP, s.IP_MULTICAST_TTL, ttl)
@@ -45,13 +64,14 @@ class BaseUpnpMediaRendererDiscover(object):
             time.sleep(0.1)
 
         buffer_size = 1024
-        while True:
+        while not timer.fired:
             try:
                 header, address = sock.recvfrom(buffer_size)
                 self._header_received(header, address)
             except s.timeout:
                 break
         sock.close()
+        timer.cancel()
 
     def _header_received(self, header, address):
         pass
