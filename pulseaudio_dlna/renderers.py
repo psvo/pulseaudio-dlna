@@ -94,6 +94,7 @@ class RendererHolder(object):
         if device_id is None:
             return
         st_header = header.get('st', None)
+        logger.debug("%s %s" % (device_id, st_header))
         if st_header and st_header in self.registered:
             if device_id not in self.renderers:
                 device = self.registered[st_header].create_device(header)
@@ -110,6 +111,7 @@ class RendererHolder(object):
             self.lock.acquire()
             nts_header = header.get('nts', None)
             nt_header = header.get('nt', None)
+            logger.debug("%s %s" % (device_id, nt_header))
             if nt_header and nts_header and nt_header in self.registered:
                 if (nts_header == self.SSDP_ALIVE and
                         device_id not in self.renderers):
